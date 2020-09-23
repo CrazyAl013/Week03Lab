@@ -18,30 +18,31 @@ import javax.servlet.http.HttpServletResponse;
 public class ArithmeticCalculatorServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("result", "Result: ---");
         getServletContext().getRequestDispatcher("/WEB-INF/ArithmeticCalculator.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        String operation = request.getParameter("operation");  
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("first", request.getParameter("first"));
+        request.setAttribute("second", request.getParameter("second"));
+
+        String operation = request.getParameter("operation");
         int firstNumber;
         int secondNumber;
         int result = 0;
-        
+
         try {
-        firstNumber = Integer.parseInt(request.getParameter("first"));
-        secondNumber = Integer.parseInt(request.getParameter("second"));
-        } catch(NumberFormatException e) {
-            request.setAttribute("result", "Invalid.");
+            firstNumber = Integer.parseInt(request.getParameter("first"));
+            secondNumber = Integer.parseInt(request.getParameter("second"));
+        } catch (NumberFormatException e) {
+            request.setAttribute("result", "Result: Invalid.");
             getServletContext().getRequestDispatcher("/WEB-INF/ArithmeticCalculator.jsp").forward(request, response);
             return;
         }
-   
-        switch(operation) {
+
+        switch (operation) {
             case "+":
                 result = firstNumber + secondNumber;
                 break;
@@ -52,15 +53,19 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
                 result = firstNumber * secondNumber;
                 break;
             case "%":
-                result = firstNumber % secondNumber;
-                break;
+                try {
+                    result = firstNumber % secondNumber;
+                    break;
+                } catch (ArithmeticException e) {
+                    request.setAttribute("result", "Result: Invalid.");
+                    getServletContext().getRequestDispatcher("/WEB-INF/ArithmeticCalculator.jsp").forward(request, response);
+                    return;
+                }
             default:
-                
+
         }
-        
-        request.setAttribute("result", result);
-        request.setAttribute("first", firstNumber);
-        request.setAttribute("second", secondNumber);
+
+        request.setAttribute("result", "Result: " + result);
         getServletContext().getRequestDispatcher("/WEB-INF/ArithmeticCalculator.jsp").forward(request, response);
     }
 }

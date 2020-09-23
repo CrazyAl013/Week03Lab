@@ -18,19 +18,17 @@ import javax.servlet.http.HttpServletResponse;
 public class AgeCalculatorServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/WEB-INF/AgeCalculator.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int age;
-     
+
         try {
             age = Integer.parseInt(request.getParameter("age"));
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             request.setAttribute("result", "You must give your current age.");
             getServletContext().getRequestDispatcher("/WEB-INF/AgeCalculator.jsp").forward(request, response);
             return;
